@@ -11,6 +11,9 @@ public class Stduent {
     private String name;
     private int age;
 
+    private long subjectCount;
+    private double subjectAverage;
+
     List<Subject> subjectList = new ArrayList<>();
 
     public void print(int age) {
