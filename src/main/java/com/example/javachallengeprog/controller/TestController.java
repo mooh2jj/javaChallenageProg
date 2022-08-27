@@ -2,6 +2,8 @@ package com.example.javachallengeprog.controller;
 
 import com.example.javachallengeprog.dto.Stduent;
 import com.example.javachallengeprog.dto.Subject;
+import com.example.javachallengeprog.dto.TestDto;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -11,6 +13,39 @@ import java.util.stream.Collectors;
 
 @RestController
 public class TestController {
+
+    @GetMapping("/get")
+    public String get() {
+        return "gettest";
+    }
+
+    // 생성자 방식, Class A = new Class() => 점진적 생성자 방식
+    // 빌더패턴 => 1) static 2) 필드의 제약 순서
+    // 빌더패턴 사용 구성 NoArgsCo, AllArgsCo
+    @PostMapping("/builderTest")
+    public TestDto builderTest(@RequestBody TestDto testDto) {
+
+//        String[] phoneArr = testDto.getPhone().split("-");
+//        String phoneJoin = String.join("", phoneArr);
+
+        String replacePhone = testDto.getPhone().replaceAll("-", "");
+        String replaceCreatedDt = testDto.getCreatedDt().replaceAll("/", "");
+
+//        => replace -> replaceAll, 데이터파싱의 정수: 정규표현식 ~ 리눅스, String, LocalDateTime
+
+        return TestDto.builder()
+                .content(testDto.getContent())
+                .testName(testDto.getTestName())
+                .phone(replacePhone)
+                .createdDt(replaceCreatedDt)
+                .build();
+    }
+
+    // String += , append()
+    // String vs StringBuffer, StringBuilder
+    // 상수풀
+
+
 
     @PostMapping("/post")
     public Stduent posttest(@RequestBody Stduent requestDto) {
