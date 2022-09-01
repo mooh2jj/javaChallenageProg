@@ -1,21 +1,56 @@
 package com.example.javachallengeprog.controller;
 
-import com.example.javachallengeprog.dto.Stduent;
-import com.example.javachallengeprog.dto.Subject;
-import com.example.javachallengeprog.dto.TestDto;
+import com.example.javachallengeprog.dto.*;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.stream.Collectors;
 
 @RestController
 public class TestController {
 
+    @PostMapping("/coupon")
+    public CouponDto.CouponDetails coupon(@RequestBody CouponDto couponDto) {
+
+//        1. 쿠폰 이름으로 한글이 들어있는 것을 정규표현식으로 찾기
+        String couponTitle = couponDto.getTitle();
+        if (couponTitle.matches(".*[ㄱ-ㅎㅏ-ㅣ가-힣]+.*")) {
+
+            LocalDateTime now = LocalDateTime.now();
+
+            // 2. 쿠폰 유효기간 체크, 쿠폰 유효기간 지나면!
+            if(now.isBefore(formatterLocalDateTime(couponDto.getBeginDt())) ||
+                now.isAfter(formatterLocalDateTime(couponDto.getEndDt()))){
+                System.out.println("==========유효성 체크");
+                return CouponDto.CouponDetails.builder()
+                        .content("쿠폰 유효기간 위반 쿠폰")
+                        .couponStatus(CouponDto.CouponStatus.UNABLE)
+                        .build();
+            }
+            return CouponDto.CouponDetails.builder()
+                    .title(couponDto.getTitle())
+                    .content(couponDto.getContent())
+                    .beginDt(couponDto.getBeginDt())
+                    .endDt(couponDto.getBeginDt())
+                    .couponStatus(CouponDto.CouponStatus.ENABLE)
+                    .build();
+        }
+
+        return CouponDto.CouponDetails.builder()
+                .content("쿠폰 한글포함 되지 않은 쿠폰")
+                .couponStatus(CouponDto.CouponStatus.UNABLE)
+                .build();
+
+    }
+
     @GetMapping("/get")
     public String get() {
+
         return "gettest";
     }
 
@@ -92,6 +127,16 @@ public class TestController {
 
         return requestDto;
 
+    }
+
+    public LocalDateTime formatterLocalDateTime(String time) {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+        return LocalDateTime.parse(time, formatter);
+    }
+
+    public String formatterString(LocalDateTime time) {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+        return time.format(formatter);
     }
 
 }
