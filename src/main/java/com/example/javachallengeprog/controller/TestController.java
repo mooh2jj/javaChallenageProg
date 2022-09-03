@@ -134,9 +134,5 @@ public class TestController {
         return LocalDateTime.parse(time, formatter);
     }
 
-    public String formatterString(LocalDateTime time) {
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-        return time.format(formatter);
-    }
 
 }
