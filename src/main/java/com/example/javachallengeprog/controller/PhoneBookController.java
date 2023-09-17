@@ -52,6 +52,11 @@ public class PhoneBookController {
             @RequestParam String name
     ) {
         log.info("name: {}", name);
+        // name에 숫자 또는 특수문자 포함 안돼, 영어, 한글만 되야
+        String regex = "[a-zA-Z가-힣]*$";
+        if(!name.matches(regex)) {
+            throw new IllegalArgumentException("이름 형식이 맞지 않습니다.");
+        }
         List<Person> result = new ArrayList<>();
         for (Person person : personList) {
             if (person.getName().toLowerCase().equals(name.toLowerCase().trim())) {
