@@ -6,7 +6,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Slf4j
 @RestController
@@ -18,7 +20,8 @@ public class PhoneBookController {
     // 2. 사람은 이름과 전화번호를 가진다.
     // 3. 전화번호는 010-1234-5678과 같은 형식이다.
     // 4. 전화번호부에 있는 사람의 이름으로 검색할 수 있다.
-    List<Person> personList = new ArrayList<>();
+//    List<Person> personList = new ArrayList<>();
+    Set<Person> personList = new HashSet<>();
 
     public PhoneBookController() {
         // 기본적으로 몇 명의 초기 사람을 추가하고 시작합니다.
@@ -37,7 +40,7 @@ public class PhoneBookController {
     }
 
     @PostMapping("/add")
-    public List<Person> addNumber(
+    public Set<Person> addNumber(
             @RequestBody PersonReqDto personReqDto
     ) {
         log.info("personReqDto: {}", personReqDto);
