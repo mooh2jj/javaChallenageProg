@@ -2,13 +2,11 @@ package com.example.javachallengeprog.controller;
 
 import com.example.javachallengeprog.dto.PersonReqDto;
 import com.example.javachallengeprog.entity.Person;
+import com.example.javachallengeprog.enums.Gender;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -45,10 +43,11 @@ public class PhoneBookController {
             @RequestBody PersonReqDto personReqDto
     ) {
         log.info("personReqDto: {}", personReqDto);
-        Person person = new Person(personReqDto.getName());
+        Person person = new Person(personReqDto.getName(), Gender.MALE);
         // person 객체의 equals(), hashCode() 메소드를 재정의해야 한다.
         // name, number가 같으면 같은 객체로 인식하도록
         // => VO: 순수한 필드 값으로 이루어짐, 그래서 비교도 그 필드 값으로 비교해주게 만들어야 한다.
+
 
         person.addPhoneNumber(personReqDto.getPhoneNumber());
         phoneBook.add(person);
@@ -57,14 +56,24 @@ public class PhoneBookController {
 
     @GetMapping("/search")
     public List<Person> search(
-            @RequestParam(required = false) String name
+            @RequestParam(required = false) String name,
+            @RequestParam(required = false) Gender gender
     ) {
         log.info("name: {}", name);
         // name에 숫자 또는 특수문자 포함 안돼, 영어, 한글만 되야
         String regex = "[a-zA-Z가-힣]*$";
+//        Map<Gender, List<Person>> mapResult = new HashMap<>();
 
         List<Person> result = new ArrayList<>();
         for (Person person : phoneBook) {
+            if (gender != null) {
+                if(person.getGender() == gender) {
+                    result.add(person);
+                    // result -> map 으로 gender를 기준으로 묶어서 보여준다.
+                    // gender를 기준으로 그룹화
+//                    mapResult.computeIfAbsent(gender, k -> new ArrayList<>()).add(person);
+                }
+            }
             if (name != null) {
                 if(!name.matches(regex)) {
                     throw new IllegalArgumentException("이름 형식이 맞지 않습니다.");
@@ -72,12 +81,13 @@ public class PhoneBookController {
                 if (person.getName().toLowerCase().equals(name.toLowerCase().trim())) {
                     result.add(person);
                 }
-            } else {
+            } else if(gender == null && name == null) {
                 result.add(person);
             }
         }
         return result;
     }
+
 
 
 }

@@ -1,26 +1,33 @@
 package com.example.javachallengeprog.entity;
 
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
+import com.example.javachallengeprog.enums.Gender;
+import lombok.*;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
-@Getter
-@Setter
-@ToString
+//@Getter
+//@Setter
+//@ToString
 //@EqualsAndHashCode
+//@Data
+@Value // final 필드만 가지고 생성자, getter, equals, hashCode, toString 메소드를 만들어준다.
 public class Person {
 
-    private String name;
-    private List<String> phoneNumberList;
+    private final String name;
+    //    private String address;
+    private final Gender gender;
+    private final Set<String> phoneNumberList;
 
     public Person(String name) {
         this.name = name;
-        this.phoneNumberList = new ArrayList<>();
+        this.gender = Gender.FEMALE;
+        this.phoneNumberList = new HashSet<>();
+    }
+
+    public Person(String name, Gender gender) {
+        this.name = name;
+        this.gender = gender;
+        this.phoneNumberList = new HashSet<>();
     }
 
     public void addPhoneNumber(String phoneNumber) {
@@ -32,16 +39,16 @@ public class Person {
         this.phoneNumberList.add(phoneNumber);
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Person person = (Person) o;
-        return Objects.equals(name, person.name) && Objects.equals(phoneNumberList, person.phoneNumberList);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(name, phoneNumberList);
-    }
+//    @Override
+//    public boolean equals(Object o) {
+//        if (this == o) return true;
+//        if (o == null || getClass() != o.getClass()) return false;
+//        Person person = (Person) o;
+//        return Objects.equals(name, person.name) && Objects.equals(phoneNumberList, person.phoneNumberList);
+//    }
+//
+//    @Override
+//    public int hashCode() {
+//        return Objects.hash(name, phoneNumberList);
+//    }
 }
